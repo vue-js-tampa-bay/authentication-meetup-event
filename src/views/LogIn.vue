@@ -28,22 +28,16 @@ export default {
     }
   },
   methods: {
-    logIn() {
-      this.axios.wrapper
-        .post('/login', {
+    async logIn() {
+      try {
+        await this.$store.dispatch('logIn', {
           email: this.email,
           password: this.password,
         })
-        .then(response => this.success(response.data.auth_token))
-        .catch(errors => this.fail(errors.response.data.errors))
-    },
-    success(token) {
-      this.$cookie.set('jwt', token, 1)
-      this.$router.replace({ name: 'todos' })
-    },
-    fail(errors) {
-      this.errors = errors.join(', ')
-      this.$cookie.delete('jwt')
+        this.$router.replace({ name: 'todos' })
+      } catch (error) {
+        this.errors = error.response.data.errors.join(', ')
+      }
     }
   }
 }

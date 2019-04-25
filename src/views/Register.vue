@@ -40,25 +40,19 @@ export default {
     }
   },
   methods: {
-    register() {
-      this.axios.wrapper
-        .post('/register', {
+    async register() {
+      try {
+        await this.$store.dispatch('register', {
           first_name: this.firstName,
           last_name: this.lastName,
           email: this.email,
           password: this.password,
           password_confirmation: this.passwordConfirmation
         })
-        .then(response => this.success(response.data.auth_token))
-        .catch(errors => this.fail(errors.response.data.errors))
-    },
-    success(token) {
-      this.$cookie.set('jwt', token, 1)
-      this.$router.replace({ name: 'todos' })
-    },
-    fail(errors) {
-      this.errors = errors.join(', ')
-      this.$cookie.delete('jwt')
+        this.$router.replace({ name: 'todos' })
+      } catch (error) {
+        this.errors = error.response.data.errors.join(', ')
+      }
     }
   }
 }

@@ -41,23 +41,25 @@
 </template>
 
 <script>
-import JwtDecode from 'vue-jwt-decode'
+import { authHelpers } from '../lib/auth/helpers'
+import { mapState } from 'vuex'
 
 export default {
   name: 'todos',
     data() {
     return {
-      name: '',
       todos: [],
       newTodo: '',
       error: '',
       editedTodo: ''
     }
   },
+  computed: {
+    ...mapState(['name'])
+  },
   created() {
-    let token = this.$cookie.get('jwt')
-    let decodedToken = JwtDecode.decode(token)
-    this.name = decodedToken.first_name
+    let token = authHelpers.retrieveToken()
+    this.$store.commit('setName', token.first_name)
 
     this.axios.wrapper.get('/todos')
       .then(response => { this.todos = response.data })
