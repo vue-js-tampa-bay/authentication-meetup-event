@@ -1,6 +1,6 @@
 <template lang="pug">
   .register-container
-    form.form
+    form.form(@submit.prevent="register")
       header.header
         h1 Sign Up
         img.logo(src="../assets/logo.png")
@@ -37,6 +37,14 @@ export default {
       password: '',
       passwordConfirmation: '',
       errors: ''
+    }
+  },
+  methods: {
+    register() {
+      this.axios
+        .post('/register', { params })
+        .then(response => doSomething(response))
+        .catch(errors => doSomethingElse(errors))
     }
   }
 }
