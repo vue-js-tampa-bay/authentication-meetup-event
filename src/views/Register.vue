@@ -41,10 +41,24 @@ export default {
   },
   methods: {
     register() {
-      this.axios
-        .post('/register', { params })
-        .then(response => doSomething(response))
-        .catch(errors => doSomethingElse(errors))
+      this.axios.wrapper
+        .post('/register', {
+          first_name: this.firstName,
+          last_name: this.lastName,
+          email: this.email,
+          password: this.password,
+          password_confirmation: this.passwordConfirmation
+        })
+        .then(response => this.success(response.data.auth_token))
+        .catch(errors => this.fail(errors.response.data.errors))
+    },
+    success(token) {
+      this.$cookie.set('jwt', token, 1)
+      this.$router.replace({ name: 'todos' })
+    },
+    fail(errors) {
+      this.errors = errors.join(', ')
+      this.$cookie.delete('jwt')
     }
   }
 }
